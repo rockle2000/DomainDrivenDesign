@@ -1,9 +1,10 @@
 package http
 
 import (
+	"fmt"
 	"net/http"
 
-	"github.com/gin-gonic/gin"
+	"github.com/labstack/echo/v4"
 
 	"DDD_Project/domain/service"
 )
@@ -18,29 +19,25 @@ func NewCustomerHandler(service service.CustomerService) *CustomerHandler {
 	}
 }
 
-func (ch *CustomerHandler) GetCustomer(c *gin.Context) {
+func (ch *CustomerHandler) GetCustomer(c echo.Context) error {
 	id := c.Param("id")
 	list, err := ch.customerService.GetCustomer(id)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
+		fmt.Println("er", err)
+		return c.JSON(http.StatusBadRequest, map[string]interface{}{
 			"error": err.Error(),
 		})
-		return
+
 	}
-	c.JSON(http.StatusOK, gin.H{
-		"data": list,
-	})
+	return c.JSON(http.StatusOK, list)
 }
 
-func (ch *CustomerHandler) GetListCustomer(c *gin.Context) {
+func (ch *CustomerHandler) GetListCustomer(c echo.Context) error {
 	list, err := ch.customerService.GetAllCustomer()
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
-		})
-		return
+		return c.JSON(http.StatusBadRequest, err)
 	}
-	c.JSON(http.StatusOK, gin.H{
+	return c.JSON(http.StatusOK, map[string]interface{}{
 		"data": list,
 	})
 }

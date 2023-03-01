@@ -40,7 +40,7 @@ func (c *customerDatastore) GetById(ctx context.Context, id string) (*entity.Cus
 func (c *customerDatastore) GetAll(ctx context.Context) ([]*entity.Customer, error) {
 	var listCustomer []*entity.Customer
 	sqlQuery := fmt.Sprintf("SELECT id, name, email FROM customer")
-	err := c.DB.Select(&listCustomer, sqlQuery)
+	err := c.DB.SelectContext(ctx, &listCustomer, sqlQuery)
 
 	if err != nil {
 		return nil, err
