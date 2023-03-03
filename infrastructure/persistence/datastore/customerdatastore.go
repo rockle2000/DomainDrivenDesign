@@ -29,7 +29,7 @@ func NewCustomerDatastore(db *sqlx.DB) CustomerDatastore {
 
 func (c *customerDatastore) GetById(ctx context.Context, id string) (*entity.Customer, error) {
 	var customer entity.Customer
-	sqlQuery := fmt.Sprint("SELECT id,name,email FROM customer WHERE id = $1")
+	sqlQuery := fmt.Sprint("SELECT c.id,c.name,c.email,a.id as \"address.id\",a.city as \"address.city\" FROM customer c JOIN address a ON c.address_id = a.id WHERE c.id = $1")
 	err := c.DB.GetContext(ctx, &customer, sqlQuery, id)
 	if err != nil {
 		return nil, err
