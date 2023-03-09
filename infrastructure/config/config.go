@@ -3,8 +3,10 @@ package config
 import "github.com/spf13/viper"
 
 type AppConfig struct {
-	Port     int
-	DBConfig DBConfig
+	Port         int
+	DBConfig     DBConfig
+	Secret       string
+	TokenExpired int
 }
 
 type DBConfig struct {

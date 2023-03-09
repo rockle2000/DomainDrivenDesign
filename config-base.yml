@@ -1,1 +1,4 @@
 port: 8081
+secret: 1c2b3a
+# seconds
+tokenExpired: 600
