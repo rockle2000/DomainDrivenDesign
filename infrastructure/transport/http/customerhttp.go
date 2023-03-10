@@ -3,6 +3,7 @@ package http
 import (
 	"fmt"
 	"net/http"
+	"strconv"
 
 	"github.com/labstack/echo/v4"
 
@@ -20,7 +21,13 @@ func NewCustomerHandler(service service.CustomerService) *CustomerHandler {
 }
 
 func (ch *CustomerHandler) GetCustomer(c echo.Context) error {
-	id := c.Param("id")
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, map[string]interface{}{
+			"error": err.Error(),
+		})
+	}
+
 	list, err := ch.customerService.GetCustomer(id)
 	if err != nil {
 		fmt.Println("er", err)

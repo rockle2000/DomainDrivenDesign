@@ -9,10 +9,10 @@ import (
 
 type CustomerRepository interface {
 	Create(ctx context.Context, customer *entity.Customer) error
-	FindById(ctx context.Context, id string) (*entity.Customer, error)
+	FindById(ctx context.Context, id int) (*entity.Customer, error)
 	FindAll(ctx context.Context) ([]*entity.Customer, error)
 	Update(ctx context.Context, customer *entity.Customer) error
-	Delete(ctx context.Context, id string) error
+	Delete(ctx context.Context, id int) error
 }
 
 type customerRepository struct {
@@ -27,7 +27,7 @@ func (cr *customerRepository) Create(ctx context.Context, customer *entity.Custo
 	return cr.dataStore.Create(ctx, customer)
 }
 
-func (cr *customerRepository) FindById(ctx context.Context, id string) (*entity.Customer, error) {
+func (cr *customerRepository) FindById(ctx context.Context, id int) (*entity.Customer, error) {
 	return cr.dataStore.GetById(ctx, id)
 }
 
@@ -39,6 +39,6 @@ func (cr *customerRepository) Update(ctx context.Context, customer *entity.Custo
 	return cr.dataStore.Update(ctx, customer)
 }
 
-func (cr *customerRepository) Delete(ctx context.Context, id string) error {
+func (cr *customerRepository) Delete(ctx context.Context, id int) error {
 	return cr.dataStore.Delete(ctx, id)
 }
