@@ -21,9 +21,9 @@ type JWT struct {
 	SigningKey []byte
 }
 type CustomClaims struct {
-	CustomerId string
-	Email      string
-	Name       string
+	CustomerId int    `json:"customer_id"`
+	Email      string `json:"email"`
+	Name       string `json:"name"`
 	jwt.RegisteredClaims
 }
 
@@ -39,7 +39,7 @@ func NewJWT(config *config.AppConfig) JWT {
 	}
 }
 
-func (j *JWT) GenerateToken(config *config.AppConfig, customerId, email, name string) (TokenInfo, error) {
+func (j *JWT) GenerateToken(config *config.AppConfig, customerId int, email, name string) (TokenInfo, error) {
 	cfExpireTime := config.TokenExpired
 	currentTime := time.Now()
 	expireTime := time.Duration(cfExpireTime)
