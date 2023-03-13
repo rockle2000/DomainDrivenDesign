@@ -6,6 +6,7 @@ import (
 
 	"DDD_Project/domain/model/entity"
 	"DDD_Project/infrastructure/persistence/datastore"
+	"DDD_Project/infrastructure/util"
 )
 
 type AuthenticationRepo interface {
@@ -28,7 +29,7 @@ func (a *authenticationRepo) Login(ctx context.Context, customer *entity.Custome
 	if err != nil {
 		return nil, errors.New("Invalid credential")
 	}
-	if customer.Password != existingCustomer.Password {
+	if !util.CheckPasswordHash(customer.Password, existingCustomer.Password) {
 		return nil, errors.New("Invalid credential")
 	}
 	return existingCustomer, nil
@@ -42,6 +43,11 @@ func (a *authenticationRepo) Register(ctx context.Context, customer *entity.Cust
 	if existingCustomer.Id != 0 {
 		return errors.New("email had already existed")
 	}
+	passwordHash, err := util.HashPassword(customer.Password)
+	if err != nil {
+		return err
+	}
+	customer.Password = passwordHash
 	err = a.customerStore.Create(ctx, customer)
 	if err != nil {
 		return err

@@ -1,7 +1,6 @@
 package http
 
 import (
-	"fmt"
 	"net/http"
 	"strconv"
 
@@ -30,7 +29,6 @@ func (ch *CustomerHandler) GetCustomer(c echo.Context) error {
 
 	list, err := ch.customerService.GetCustomer(id)
 	if err != nil {
-		fmt.Println("er", err)
 		return c.JSON(http.StatusBadRequest, map[string]interface{}{
 			"error": err.Error(),
 		})
