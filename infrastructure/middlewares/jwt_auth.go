@@ -18,22 +18,21 @@ func JWTAuth(config *config.AppConfig) func(next echo.HandlerFunc) echo.HandlerF
 				c.JSON(http.StatusBadRequest, map[string]interface{}{
 					"error": "token cannot be null",
 				})
-				c.Logger().Error(errors.New("token cannot be null"))
 				return errors.New("token cannot be null")
 			}
 			j := util.NewJWT(config)
 			extractToken, err := j.ExtractToken(token)
 			if err != nil {
-				c.Logger().Error(errors.New("token cannot be null"))
+				c.JSON(http.StatusBadRequest, map[string]interface{}{
+					"error": err.Error(),
+				})
 				return err
 			}
 			claims, err := j.ParseToken(extractToken)
 			if err != nil {
-				if err == util.TokenExpired {
-					c.Logger().Error(err)
-					return err
-				}
-				c.Logger().Error(err)
+				c.JSON(http.StatusBadRequest, map[string]interface{}{
+					"error": err.Error(),
+				})
 				return err
 			}
 

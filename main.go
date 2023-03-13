@@ -6,13 +6,11 @@ import (
 
 	"github.com/jmoiron/sqlx"
 	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 	_ "github.com/lib/pq"
 
-	"DDD_Project/domain/repository"
-	"DDD_Project/domain/service"
 	"DDD_Project/infrastructure/config"
-	"DDD_Project/infrastructure/persistence/datastore"
-	"DDD_Project/infrastructure/transport/http"
+	"DDD_Project/infrastructure/router"
 )
 
 func main() {
@@ -25,14 +23,14 @@ func main() {
 	if err != nil {
 		log.Fatalln("Error while connect to database", err)
 	}
-	customerDataStore := datastore.NewCustomerDatastore(db)
-	customerRepo := repository.NewCustomerRepository(customerDataStore)
-	customerService := service.NewCustomerService(customerRepo)
-	customerTransport := http.NewCustomerHandler(customerService)
 
 	e := echo.New()
-	e.GET("/customer", customerTransport.GetListCustomer)
-	e.GET("/customer/:id", customerTransport.GetCustomer)
+	e.Use(middleware.Logger())
+	e.Use(middleware.Recover())
+	//e.Use(middlewares.MiddlewareLogging)
+	r := router.NewAppRouter(e, db, cf)
+
+	router.InitRouter(r)
 	e.Logger.Fatal(e.Start(":8081"))
 
 }
